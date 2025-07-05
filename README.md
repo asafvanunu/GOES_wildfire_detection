@@ -44,6 +44,15 @@ conda activate wildfire-detection
 ```bash
 pip install -r requirements.txt
 ```
+### Additional recommended Library:
+
+Install the GOES Python library separately:
+
+```bash
+pip install goes
+```
+
+More information: [GOES Python Library](https://pypi.org/project/GOES/)
 
 Python version: `3.9.16`
 
@@ -51,22 +60,25 @@ Python version: `3.9.16`
 
 ## 📝 Example Usage
 
-The `/notebooks/wildfire_example.ipynb` notebook demonstrates:
-
-1. Loading MCMI and AOI data
-2. Running wildfire detection
-3. Visualizing fire predictions on an interactive map
-
-Example code snippet:
-
 ```python
-from src.wildfire_detection import detect_fire, create_aoi_polygon
+import geopandas as gpd
+from wildfire_detection import predict_fire_for_AOI, plot_fire_prediction_on_interactive_map
 
-# Create AOI from coordinates
-aoi = create_aoi_polygon(x_min=-100, x_max=-99, y_min=35, y_max=36)
+AOI_path = r"..\data\AOI\AOI.shp"  # Path to AOI shapefile
+MCMI_path = r"..\data\GOES_18\OR_ABI-L2-MCMIPC-M6_G18_s202407071036.nc"  # MCMI file path
+ACM_path = r"..\data\GOES_18\OR_ABI-L2-ACMC-M6_G18_s202407071036.nc"  # ACM file path
 
-# Run detection
-result = detect_fire(MCMI_path='data/MCMI_sample.nc', ACM_path=None, AOI_path='data/AOI_sample.shp')
+AOI = gpd.read_file(AOI_path)
+
+fire_raster = predict_fire_for_AOI(
+    MCMI_path=MCMI_path,
+    AOI_path=AOI_path,
+    ACM_path=ACM_path,
+    save_raster=False,
+    output_path=None
+)
+
+plot_fire_prediction_on_interactive_map(prediction_raster=fire_raster, AOI=AOI)
 ```
 
 ---
@@ -88,26 +100,17 @@ result = detect_fire(MCMI_path='data/MCMI_sample.nc', ACM_path=None, AOI_path='d
 
 ---
 
-## 🔖 License
-
-This project is licensed under the MIT License.
-
----
 
 ## 🙏 Acknowledgments
 
 * GOES satellite data: NOAA
 * Geospatial tools: GeoPandas, rioxarray
 * Machine Learning: CatBoost
+* **GOES Python Library:** [https://pypi.org/project/GOES/](https://pypi.org/project/GOES/)
+* **GOES Satellite Data Archive:** [https://www.ssec.wisc.edu/datacenter/goes-archive/#GOES16](https://www.ssec.wisc.edu/datacenter/goes-archive/#GOES16)
 
 ---
 
-## 🤝 Contributing
-
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
----
 
 ## 📬 Contact
-
-For questions or collaborations, please contact: \[Your Name or GitHub username]
+For questions, suggestions, or collaboration, please contact: **[asafyu@post.bgu.ac.il](mailto:asafyu@post.bgu.ac.il)**
