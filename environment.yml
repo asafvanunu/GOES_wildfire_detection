@@ -1,0 +1,17 @@
+name: wildfire-detection
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9.16
+  - rioxarray
+  - xarray
+  - pandas
+  - geopandas
+  - numpy
+  - joblib
+  - shapely
+  - matplotlib
+  - contextily
+  - geoviews
+  - holoviews
+  - bokeh

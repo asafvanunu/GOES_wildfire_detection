@@ -1,0 +1,12 @@
+rioxarray
+xarray
+pandas
+geopandas
+numpy
+joblib
+shapely
+matplotlib
+contextily
+geoviews
+holoviews
+bokeh
