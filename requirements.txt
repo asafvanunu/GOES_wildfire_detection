@@ -1,6 +1,7 @@
 rioxarray
 jupyter
 folium
+scikit-learn
 xarray
 pandas
 geopandas

@@ -18,3 +18,4 @@ dependencies:
   - bokeh
   - folium
   - dask
+  - scikit-learn
