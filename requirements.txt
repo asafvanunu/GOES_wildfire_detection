@@ -2,6 +2,7 @@ rioxarray
 jupyter
 folium
 scikit-learn
+catboost
 xarray
 pandas
 geopandas
