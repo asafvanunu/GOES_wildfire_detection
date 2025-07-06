@@ -48,7 +48,7 @@ Or use the pre-defined environment file:
 
 ```bash
 conda env create -f environment.yml
-conda activate wildfire-detection
+conda activate wildfire_detection
 ```
 
 
