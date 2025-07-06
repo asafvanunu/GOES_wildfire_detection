@@ -1,5 +1,6 @@
 # %%
 import rioxarray
+import folium
 import xarray as xr
 import warnings
 import pandas as pd
@@ -739,7 +740,7 @@ def predict_fire_for_AOI(MCMI_path:str,
     except Exception as e: ## Catch any exception that occurs during the cropping of the MCMI image
         raise ValueError(f"Error cropping MCMI image: {e}")
     
-    catboost_path = r"model\catboost_model.pkl"
+    catboost_path = r"..\model\catboost_model.pkl"
     ML_model = open_catboost_model(catboost_path) ## Open the catboost model
     threshold = 0.9 ## Set the threshold for the prediction
     y_prob = ML_model.predict_proba(AOI_df)[:,1] ## predict the probabilities of fire
@@ -780,18 +781,6 @@ def create_polygon_from_latlon(x_min, x_max, y_min, y_max, output_path):
     gdf.to_file(f"{output_path}.shp")  ## Save the GeoDataFrame as a shapefile
     print(f"Polygon saved to {output_path}.shp")  ## Print a message
 
-
-# %%
-AOI_path = r"data\\AOI\\AOI.shp" ## Path to the AOI shapefile
-MCMI_path = r"data\\GOES_18\\OR_ABI-L2-MCMIPC-M6_G18_s202407071036.nc" ## Path to the MCMI file
-
-# %%
-x = predict_fire_for_AOI(MCMI_path=MCMI_path,
-                            AOI_path=AOI_path,
-                            ACM_path=None,
-                            save_raster=False)
-                         
-                         
 
 # %%
 def plot_fire_prediction(fire_prediction_raster, AOI):
@@ -845,7 +834,7 @@ def plot_fire_prediction(fire_prediction_raster, AOI):
     plt.show()
 
 # %%
-def plot_fire_prediction_on_interactive_map(prediction_raster, AOI):
+def plot_fire_prediction_on_interactive_map(prediction_raster, AOI_path):
     """This function plots the fire prediction raster on an interactive map.
 
     Args:
@@ -854,10 +843,11 @@ def plot_fire_prediction_on_interactive_map(prediction_raster, AOI):
     """
     if not isinstance(prediction_raster, xr.DataArray):
         raise ValueError("prediction_raster should be an xarray DataArray")
-    if not isinstance(AOI, gpd.GeoDataFrame):
-        raise ValueError("AOI should be a geopandas GeoDataFrame")
+    if not isinstance(AOI_path, str):
+        raise ValueError("AOI_path should be a string")
     
     # Optional: Reproject raster for basemap compatibility
+    AOI = gpd.read_file(AOI_path)  # Read AOI from shapefile
     prediction_raster = prediction_raster.rio.reproject("EPSG:3857")
     AOI = AOI.to_crs(epsg=3857)
     prediction_raster.coords["x"].attrs["units"] = "Longitude"  
@@ -889,5 +879,50 @@ def plot_fire_prediction_on_interactive_map(prediction_raster, AOI):
     plot = raster * vector * gv.tile_sources.EsriImagery
     plot.opts(width=800, height=600, title="Fire Prediction Map")
     return plot
+
+# %%
+def plot_AOI_on_interactive_map(AOI_path):
+    """This function plots the AOI polygon on an interactive map.
+
+    Args:
+        AOI_path (str): The path to the AOI shapefile.
+    """
+    if not isinstance(AOI_path, str):
+        raise ValueError("AOI_path should be a string")
+    
+    AOI = gpd.read_file(AOI_path) ## Read the AOI shapefile
+    AOI = AOI.to_crs(epsg=4326) ## Convert the AOI polygon to the 4326 CRS
+    
+    # Example center coordinates
+    centroid = AOI.geometry.centroid.iloc[0]
+    map_center = [centroid.y, centroid.x]
+    
+    # Create map with Esri satellite tiles
+    m = folium.Map(location=map_center, zoom_start=10, tiles=None)
+
+    # Add Esri satellite tiles
+    folium.TileLayer(
+    tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attr='Esri',
+    name='Esri Satellite',
+    overlay=False,
+    control=True
+    ).add_to(m)
+
+    # Add your polygon
+    folium.GeoJson(
+    AOI,
+    style_function=lambda feature: {
+        'fillColor': 'purple',
+        'color': 'purple',
+        'weight': 3,
+        'fillOpacity': 0.3,
+    },
+    name='AOI'
+    ).add_to(m)
+
+    folium.LayerControl().add_to(m)
+
+    return m
 
 

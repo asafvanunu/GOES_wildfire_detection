@@ -1,4 +1,5 @@
 rioxarray
+folium
 xarray
 pandas
 geopandas
