@@ -18,5 +18,5 @@ dependencies:
   - bokeh
   - folium
   - dask
-  - scikit-learn
+  - scikit-learn==1.4.0
   - catboost

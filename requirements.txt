@@ -1,7 +1,7 @@
 rioxarray
 jupyter
 folium
-scikit-learn
+scikit-learn==1.4.0
 catboost
 xarray
 pandas
