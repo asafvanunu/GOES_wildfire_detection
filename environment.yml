@@ -4,6 +4,7 @@ channels:
 dependencies:
   - python=3.9.16
   - rioxarray
+  - jupyter
   - xarray
   - pandas
   - geopandas
@@ -16,3 +17,4 @@ dependencies:
   - holoviews
   - bokeh
   - folium
+  - dask

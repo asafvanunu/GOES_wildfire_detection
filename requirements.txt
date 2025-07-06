@@ -1,4 +1,5 @@
 rioxarray
+jupyter
 folium
 xarray
 pandas
@@ -11,3 +12,5 @@ contextily
 geoviews
 holoviews
 bokeh
+dask
+dask[dataframe]
