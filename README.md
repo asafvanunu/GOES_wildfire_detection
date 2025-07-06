@@ -39,7 +39,7 @@ Python version: `3.9`
 ### 🐍 Option 1: Using Conda
 
 ```bash
-conda create -n wildfire-detection python=3.9
+conda create -n wildfire_detection python=3.9
 conda activate wildfire_detection
 conda install --file requirements.txt
 ```
