@@ -34,13 +34,13 @@ wildfire-detection/
 
 ## 💻 Installation
 
-Python version: `3.9.16`
+Python version: `3.9`
 
 ### 🐍 Option 1: Using Conda
 
 ```bash
-conda create -n wildfire-detection python=3.9.16
-conda activate wildfire-detection
+conda create -n wildfire-detection python=3.9
+conda activate wildfire_detection
 conda install --file requirements.txt
 ```
 

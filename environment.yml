@@ -1,8 +1,8 @@
-name: wildfire-detection
+name: wildfire_detection
 channels:
   - conda-forge
 dependencies:
-  - python=3.9.16
+  - python=3.9
   - rioxarray
   - jupyter
   - xarray
