@@ -783,7 +783,7 @@ def create_polygon_from_latlon(x_min, x_max, y_min, y_max, output_path):
 
 
 # %%
-def plot_fire_prediction(fire_prediction_raster, AOI):
+def plot_fire_prediction(fire_prediction_raster, AOI_path):
     """This function plots the fire prediction raster and the AOI polygon on a map.
 
     Args:
@@ -792,14 +792,16 @@ def plot_fire_prediction(fire_prediction_raster, AOI):
     """
     if not isinstance(fire_prediction_raster, xr.DataArray):
         raise ValueError("fire_prediction_raster should be an xarray DataArray")
-    if not isinstance(AOI, gpd.GeoDataFrame):
-        raise ValueError("AOI should be a geopandas GeoDataFrame")
+    if not isinstance(AOI_path, str):
+        raise ValueError("AOI_path should be a string")
     
 
 
     # Reproject to EPSG:3857 if needed
     fire_prediction_raster = fire_prediction_raster.rio.reproject("EPSG:3857")
-    AOI = AOI.to_crs(epsg=3857)
+    AOI = gpd.read_file(AOI_path)  # Read the AOI shapefile
+    if AOI.crs is not "EPSG:3857":
+        AOI = AOI.to_crs(epsg=3857)
 
     # Define binary colormap: 0 = transparent black, 1 = solid red
     binary_cmap = ListedColormap([
